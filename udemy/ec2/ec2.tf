@@ -15,16 +15,13 @@ data "aws_ami" "ubuntu_ec2_ami" {
 }
 
 resource "aws_instance" "ubuntu_ec2" {
-  ami           = data.aws_ami.ubuntu_ec2_ami.id
-  instance_type = "t2.micro"
-  
+  ami = data.aws_ami.ubuntu_ec2_ami.id
+
+  instance_type               = "t2.micro"
   associate_public_ip_address = true
-
-  availability_zone = var.availability_zone
-
-  vpc_security_group_ids = [aws_security_group.ec2_sg.id]
-
-  subnet_id = aws_subnet.public_subnet.id
+  availability_zone           = var.availability_zone
+  vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
+  subnet_id                   = aws_subnet.public_subnet.id
 
   tags = {
     Name = "ec2-terraform"
