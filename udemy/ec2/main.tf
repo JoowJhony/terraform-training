@@ -5,6 +5,11 @@ terraform {
       version = "5.73.0"
     }
   }
+  backend "s3" {
+    bucket = "my-tfstate-bucket-joow"
+    key    = "aws-udemy/terraform.tfstate"
+    region = "us-east-1"
+  }
 }
 
 provider "aws" {

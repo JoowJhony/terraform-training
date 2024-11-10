@@ -22,6 +22,13 @@ provider "aws" {
 
 ### Bucket ###
 
-resource "aws_s3_bucket" "first_bucket" {
-  bucket = "my-tf-test-bucket-joow"
+resource "aws_s3_bucket" "tfstate_bucket" {
+  bucket = "my-tfstate-bucket-joow"
+}
+
+resource "aws_s3_bucket_versioning" "versioning_tfstate_bucket" {
+  bucket = aws_s3_bucket.tfstate_bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
 }
