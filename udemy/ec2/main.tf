@@ -17,8 +17,8 @@ provider "aws" {
 
   default_tags {
     tags = {
-      owner      = "Jonatas"
-      managed-by = "Terraform"
+      Owner      = "jonatas"
+      Managed-By = "terraform"
     }
   }
 }
@@ -31,12 +31,15 @@ resource "aws_vpc" "main_vpc" {
   enable_dns_support   = "true"
   enable_dns_hostnames = "true"
   tags = {
-    Name = "my-vpc"
+    Name = "main-vpc"
   }
 }
 
 resource "aws_internet_gateway" "igw_main_vpc" {
   vpc_id = aws_vpc.main_vpc.id
+  tags = {
+    Name = "igw-main-vpc"
+  }
 }
 
 ### Subnet Features ###
@@ -48,17 +51,27 @@ resource "aws_subnet" "public_subnet" {
   vpc_id            = aws_vpc.main_vpc.id
   cidr_block        = "10.0.1.0/24"
   availability_zone = var.availability_zone
+  tags = {
+  Name = "public-subnet"
+  }
 }
 
 resource "aws_eip" "nat_eip" {
   domain = "vpc"
+  tags = {
+  Name = "eip-nat"
+  }
 }
 
 resource "aws_nat_gateway" "main_nat_gateway" {
   allocation_id = aws_eip.nat_eip.id
   subnet_id     = aws_subnet.public_subnet.id
   depends_on    = [aws_internet_gateway.igw_main_vpc]
+  tags = {
+  Name = "main-nat"
+  }
 }
+
 
 resource "aws_route_table" "public_subnet_route_table" {
   vpc_id = aws_vpc.main_vpc.id
@@ -67,9 +80,12 @@ resource "aws_route_table" "public_subnet_route_table" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw_main_vpc.id
   }
+  tags = {
+  Name = "public-rt"
+  }
 }
 
-resource "aws_route_table_association" "a" {
+resource "aws_route_table_association" "public-rt-association" {
   subnet_id      = aws_subnet.public_subnet.id
   route_table_id = aws_route_table.public_subnet_route_table.id
 }
@@ -89,9 +105,12 @@ resource "aws_route_table" "private_subnet_route_table" {
     cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.main_nat_gateway.id
   }
+  tags = {
+  Name = "private-rt"
+  }
 }
 
-resource "aws_route_table_association" "rt_private_association" {
+resource "aws_route_table_association" "private_rt_association" {
   subnet_id      = aws_subnet.private_subnet.id
   route_table_id = aws_route_table.private_subnet_route_table.id
 }
@@ -129,16 +148,16 @@ resource "aws_instance" "ubuntu_ec2" {
 }
 
 resource "aws_security_group" "ec2_sg" {
-  name        = "ec2_sg"
+  name        = "ec2-terraform-sg"
   description = "Allow TLS inbound traffic and all outbound traffic"
   vpc_id      = aws_vpc.main_vpc.id
 
   tags = {
-    Name = "ec2_sg"
+    Name = "ec2-terraform-sg"
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "ec2_sg_ipv4" {
+resource "aws_vpc_security_group_ingress_rule" "ec2_inbound_ssh" {
   security_group_id = aws_security_group.ec2_sg.id
   cidr_ipv4         = "0.0.0.0/0"
   from_port         = 22
@@ -146,7 +165,7 @@ resource "aws_vpc_security_group_ingress_rule" "ec2_sg_ipv4" {
   to_port           = 22
 }
 
-resource "aws_vpc_security_group_ingress_rule" "ec2_sg_icmp" {
+resource "aws_vpc_security_group_ingress_rule" "ec2_inbound_icmp" {
   security_group_id = aws_security_group.ec2_sg.id
   cidr_ipv4         = "0.0.0.0/0"
   from_port         = -1
@@ -154,7 +173,7 @@ resource "aws_vpc_security_group_ingress_rule" "ec2_sg_icmp" {
   to_port           = -1
 }
 
-resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
+resource "aws_vpc_security_group_egress_rule" "ec2_outbound_all" {
   security_group_id = aws_security_group.ec2_sg.id
   cidr_ipv4         = "0.0.0.0/0"
   ip_protocol       = "-1" # semantically equivalent to all ports
