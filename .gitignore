@@ -33,7 +33,7 @@ override.tf.json
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 *.tfplan
 *.plan.out
-./udemy/bucket/plan.out
+/udemy/ec2/plan.out
 ./vpc/plan.out
 ./ec2/plan.out
 plan.out
