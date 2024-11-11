@@ -37,7 +37,7 @@ override.tf.json
 ./vpc/plan.out
 ./ec2/plan.out
 plan.out
-
+**/*/*/plan.*
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
