@@ -6,7 +6,7 @@ terraform {
     }
   }
   backend "s3" {
-    bucket = var.backend
+    bucket = "my-tfstate-bucket-joow"
     key    = "aws-vpc/terraform.tfstate"
     region = "us-east-1"
   }
@@ -115,4 +115,3 @@ resource "aws_route_table_association" "private_rt_association" {
   subnet_id      = aws_subnet.private_subnet.id
   route_table_id = aws_route_table.private_subnet_route_table.id
 }
-

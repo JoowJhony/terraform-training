@@ -1,9 +1,3 @@
-variable "backend" {
-  description = "Bucket que guardará o Tfstate"
-  type        = string
-  default     = "my-tfstate-bucket-joow"
-}
-
 variable "environment" {
   description = "Ambiente em que os recursos serão lançados"
   type        = string
