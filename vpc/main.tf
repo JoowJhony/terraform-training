@@ -26,19 +26,17 @@ provider "aws" {
 
 ### VPC Features ###
 
-resource "aws_vpc" "main_vpc" {
-  cidr_block           = "10.0.0.0/16"
-  enable_dns_support   = "true"
-  enable_dns_hostnames = "true"
+resource "aws_vpc" "vpc" {
+  cidr_block           = var.vpc_cidr
   tags = {
-    Name = "main-vpc"
+    Name = var.vpc_name
   }
 }
 
-resource "aws_internet_gateway" "igw_main_vpc" {
-  vpc_id = aws_vpc.main_vpc.id
+resource "aws_internet_gateway" "internet_gateway" {
+  vpc_id = aws_vpc.vpc.id
   tags = {
-    Name = "igw-main-vpc"
+    Name = var.internet_gateway_name
   }
 }
 
@@ -52,14 +50,14 @@ resource "aws_subnet" "public_subnet" {
   cidr_block        = "10.0.1.0/24"
   availability_zone = var.availability_zone
   tags = {
-  Name = "public-subnet"
+    Name = format("%s/%s",var.subnets_name,"-public_subnet")
   }
 }
 
 resource "aws_eip" "nat_eip" {
   domain = "vpc"
   tags = {
-  Name = "eip-nat"
+  Name = var.nat_gateway_elastic_ip_name
   }
 }
 
@@ -68,7 +66,7 @@ resource "aws_nat_gateway" "main_nat_gateway" {
   subnet_id     = aws_subnet.public_subnet.id
   depends_on    = [aws_internet_gateway.igw_main_vpc]
   tags = {
-  Name = "main-nat"
+  Name = var.nat_gateway_name
   }
 }
 
@@ -96,6 +94,9 @@ resource "aws_subnet" "private_subnet" {
   vpc_id            = aws_vpc.main_vpc.id
   cidr_block        = "10.0.2.0/24"
   availability_zone = var.availability_zone
+  tags = {
+    Name = format("%s/%s",var.subnets_name,"-private_subnet")
+  }
 }
 
 resource "aws_route_table" "private_subnet_route_table" {
