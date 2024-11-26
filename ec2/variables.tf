@@ -4,12 +4,6 @@ variable "availability_zone" {
   default     = "us-east-1a"
 }
 
-variable "availability_zone" {
-  description = "AZ de criação dos recursos"
-  type        = string
-  default     = "us-east-1a"
-}
-
 variable "security_group" {
   description = "Nome do Security Group"
   type        = string
@@ -19,5 +13,5 @@ variable "security_group" {
 variable "meu_ip" {
   description = "IP para acesso SSH a instância"
   type        = string
-  default     = ""
+  default     = "177.172.61.64/32"
 }

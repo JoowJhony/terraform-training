@@ -17,7 +17,7 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Owner      = var.environment
+      Environment      = var.environment
       Managed-By = "terraform"
     }
   }
@@ -27,7 +27,7 @@ provider "aws" {
 ### VPC Features ###
 
 resource "aws_vpc" "main_vpc" {
-  cidr_block           = var.vpc_cidr
+  cidr_block = var.vpc_cidr
   tags = {
     Name = var.vpc_name
   }
@@ -50,14 +50,14 @@ resource "aws_subnet" "public_subnet" {
   cidr_block        = "10.0.1.0/24"
   availability_zone = var.availability_zone
   tags = {
-    Name = format("%s/%s",var.subnets_name,"public_subnet")
+    Name = format("%s/%s", var.subnets_name, "public_subnet")
   }
 }
 
 resource "aws_eip" "nat_eip" {
   domain = "vpc"
   tags = {
-  Name = var.nat_gateway_elastic_ip_name
+    Name = var.nat_gateway_elastic_ip_name
   }
 }
 
@@ -66,7 +66,7 @@ resource "aws_nat_gateway" "main_nat_gateway" {
   subnet_id     = aws_subnet.public_subnet.id
   depends_on    = [aws_internet_gateway.internet_gateway]
   tags = {
-  Name = var.nat_gateway_name
+    Name = var.nat_gateway_name
   }
 }
 
@@ -79,7 +79,7 @@ resource "aws_route_table" "public_subnet_route_table" {
     gateway_id = aws_internet_gateway.internet_gateway.id
   }
   tags = {
-  Name = format("%s/%s",var.subnets_name,"public_route_table")
+    Name = format("%s/%s", var.subnets_name, "public_route_table")
   }
 }
 
@@ -95,7 +95,7 @@ resource "aws_subnet" "private_subnet" {
   cidr_block        = "10.0.2.0/24"
   availability_zone = var.availability_zone
   tags = {
-    Name = format("%s/%s",var.subnets_name,"private_subnet")
+    Name = format("%s/%s", var.subnets_name, "private_subnet")
   }
 }
 
@@ -107,7 +107,7 @@ resource "aws_route_table" "private_subnet_route_table" {
     nat_gateway_id = aws_nat_gateway.main_nat_gateway.id
   }
   tags = {
-  Name = format("%s/%s",var.subnets_name,"private_route_table")
+    Name = format("%s/%s", var.subnets_name, "private_route_table")
   }
 }
 
