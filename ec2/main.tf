@@ -32,7 +32,37 @@ data "terraform_remote_state" "vpc" {
   }
 }
 
+### Security Group Features ###
 
+resource "aws_security_group" "ec2_sg" {
+  vpc_id      = aws_vpc.main_vpc.id ##################################################################################
+
+  tags = {
+    Name = var.security_group
+  }
+}
+
+resource "aws_vpc_security_group_egress_rule" "ec2_outbound_all" {
+  security_group_id = aws_security_group.ec2_sg.id
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "-1" # semantically equivalent to all ports
+}
+
+resource "aws_vpc_security_group_ingress_rule" "ec2_inbound_ssh" {
+  security_group_id = aws_security_group.ec2_sg.id
+  cidr_ipv4         = var.meu_ip
+  from_port         = 22
+  ip_protocol       = "tcp"
+  to_port           = 22
+}
+
+resource "aws_vpc_security_group_ingress_rule" "ec2_inbound_icmp" {
+  security_group_id = aws_security_group.ec2_sg.id
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = -1
+  ip_protocol       = "icmp"
+  to_port           = -1
+}
 
 ### EC2 Features ###
 

@@ -1,3 +1,21 @@
+variable "backend" {
+  description = "Bucket que guardará o Tfstate"
+  type        = string
+  default     = "my-tfstate-bucket-joow"
+}
+
+variable "environment" {
+  description = "Ambiente em que os recursos serão lançados"
+  type        = string
+  default     = "prd"
+}
+
+variable "regiao" {
+  description = "Região em que os recursos e bucket do backend serão lançados"
+  type        = string
+  default     = "us-east-1"
+}
+
 variable "availability_zone" {
   description = "Zona de Disponibilidade de criação dos recursos"
   type        = string
@@ -26,6 +44,18 @@ variable "subnets_name" {
   description = "Nome da Subnet Public ou Privada"
   type        = string
   default     = ""
+}
+
+variable "public_subnet_cidr" {
+  description = "Range de IP da Subnet Publica"
+  type        = string
+  default     = "10.0.1.0/24"
+}
+
+variable "private_subnet_cidr" {
+  description = "Range de IP da Subnet Privada"
+  type        = string
+  default     = "10.0.2.0/24"
 }
 
 variable "nat_gateway_elastic_ip_name" {
