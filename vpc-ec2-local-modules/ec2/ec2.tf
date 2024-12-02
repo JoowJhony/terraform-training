@@ -1,41 +1,7 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "5.73.0"
-    }
-  }
-  backend "s3" {
-    bucket = "my-tfstate-bucket-joow"
-    key    = "aws-ec2/terraform.tfstate"
-    region = "us-east-1"
-  }
-}
-
-provider "aws" {
-  region = "us-east-1"
-
-  default_tags {
-    tags = {
-      Owner      = "jonatas"
-      Managed-By = "terraform"
-    }
-  }
-}
-
-data "terraform_remote_state" "vpc" {
-  backend = "s3"
-  config = {
-    bucket = "my-tfstate-bucket-joow"
-    key    = "aws-vpc/terraform.tfstate"
-    region = "us-east-1"
-  }
-}
-
 ### Security Group Features ###
 
 resource "aws_security_group" "ec2_sg" {
-  vpc_id      = data.terraform_remote_state.vpc.outputs.vpc_id
+  vpc_id = var.vpc_id
   tags = {
     Name = var.security_group
   }
@@ -88,7 +54,7 @@ resource "aws_instance" "ubuntu_ec2" {
   associate_public_ip_address = true
   availability_zone           = var.availability_zone
   vpc_security_group_ids      = [aws_security_group.ec2_sg.id]
-  subnet_id                   = data.terraform_remote_state.vpc.outputs.public_subnet_id
+  subnet_id                   = var.public_subnet_id
   # key_name = aws_key_pair.key_pair_ubuntu_ec2.key_name
   tags = {
     Name = "ec2-terraform"

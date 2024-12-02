@@ -15,3 +15,14 @@ variable "meu_ip" {
   type        = string
   default     = "177.172.61.64/32"
 }
+variable "vpc_id" {
+  description = "ID da VPC que será herado do root module"
+  type        = string
+  default     = ""
+}
+
+variable "public_subnet_id" {
+  description = "ID da subnet publica que será herado do root module"
+  type        = string
+  default     = ""
+}

@@ -13,7 +13,6 @@ provider "aws" {
 
   default_tags {
     tags = {
-      owner      = "Jonatas"
       managed-by = "Terraform"
     }
   }
@@ -23,7 +22,7 @@ provider "aws" {
 ### Bucket ###
 
 resource "aws_s3_bucket" "tfstate_bucket" {
-  bucket = "my-tfstate-bucket-joow"
+  bucket = "joow-bucket-terraform-trainig"
 }
 
 resource "aws_s3_bucket_versioning" "versioning_tfstate_bucket" {
